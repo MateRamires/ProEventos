@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "back", "back", "{1178F1B9-D828-411E-848B-98B49ADB2B1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{98325EA4-C773-4FB5-8805-7F3A83C3A9F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProEventos.API", "back\src\ProEventos.API\ProEventos.API.csproj", "{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Debug|x64.Build.0 = Debug|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Release|x64.ActiveCfg = Release|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Release|x64.Build.0 = Release|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{98325EA4-C773-4FB5-8805-7F3A83C3A9F4} = {1178F1B9-D828-411E-848B-98B49ADB2B1D}
+		{AAA70C2A-C0B6-41FE-8B16-8435388C31FB} = {98325EA4-C773-4FB5-8805-7F3A83C3A9F4}
+	EndGlobalSection
+EndGlobal
