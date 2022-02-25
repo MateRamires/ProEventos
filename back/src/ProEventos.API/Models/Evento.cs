@@ -1,4 +1,4 @@
-namespace ProEventos.API.Models
+namespace ProEventos.API.Models //Quando um arquivo fizer uso desse modelo, ele tera que ter um using <esse_namespace> para utilizar a classe Evento.
 {
     public class Evento
     {
