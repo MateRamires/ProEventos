@@ -1,0 +1,9 @@
+<h1>Eventos</h1>
+
+
+
+<div *ngFor="let evento of eventos"> <!-- O ng-for vai multiplicar/repitir a div a quantidade de eventos que eu tenho.  -->
+  <p><b>Tema: </b>{{evento.tema}}</p> <!-- o ng-for funciona como um forEach, entao nao ha necessidade de deixar explicito qual posicao do array vc quer que mostre na tela, ele ja vai mostrar todos se vc deixar sem o colchetes. -->
+  <p><b>Local: </b>{{evento.local}}</p>
+  <hr>
+</div>

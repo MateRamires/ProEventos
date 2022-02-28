@@ -32,6 +32,7 @@ namespace ProEventos.API
                 context => context.UseSqlite(Configuration.GetConnectionString("Default")) //Com o contexto em maos, nos falamos que o contexto ira usar o sqLite (DB que vamos usar) e passamos como parametro a conexao com esse DB. Essa conexao eh feita usando o configuration, que foi injetado nessa classe e eh referente ao appsettings.json, entao la no appsettings nos colocamos a "rota" para o db e o nome dessa rota sera exatamente o "Default" que passamos como parametro para o useSqlite. 
             ); //Para pegar uma string de conexao basta usar a variavel configuration e o metodo dela "GetConnectionString()".
             services.AddControllers(); 
+            services.AddCors();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProEventos.API", Version = "v1" });
@@ -53,6 +54,11 @@ namespace ProEventos.API
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(
+                cors => cors.AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin());
 
             app.UseEndpoints(endpoints =>
             {
