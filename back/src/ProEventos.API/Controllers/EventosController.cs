@@ -11,7 +11,7 @@ namespace ProEventos.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")] //Aqui esta a rota, e pode ser alterado
-    public class EventoController : ControllerBase
+    public class EventosController : ControllerBase
     {
         /*public IEnumerable<Evento> _evento = new Evento[] { //Aqui estamos instanciando um array do tipo Evento, para ter dentro dele, todos os eventos.
          new Evento() {
@@ -35,7 +35,7 @@ namespace ProEventos.API.Controllers
       };*/ //Foi comentada toda essa linha, pois depois da aula 23, nos estamos pegando os dados do proprio DB que eh o context.
         private readonly DataContext contexto;
 
-        public EventoController(DataContext contexto)
+        public EventosController(DataContext contexto)
         {
             this.contexto = contexto;
         }
