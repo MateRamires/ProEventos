@@ -1,9 +1,57 @@
 <h1>Eventos</h1>
+<hr>
+
+<form>
+  <div class="mb-2 row">
+      <div class="col-4">
+        <input type="text" class="form-control mb-2" placeholder="Buscar">
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-success">Buscar</button>
+      </div>
+  </div>
+</form>
+
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>#</th>
+      <th>Imagem</th>
+      <th>Tema</th>
+      <th>Local</th>
+      <th>Data</th>
+      <th>Qtd Pessoas</th>
+      <th>Lote</th>
+      <th>Opcoes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let evento of eventos">
+      <td>{{evento.eventoId}}</td>
+      <td>{{evento.imageURL}}</td>
+      <td>{{evento.tema}}</td>
+      <td>{{evento.local}}</td>
+      <td>{{evento.dataEvento}}</td>
+      <td>{{evento.qtdPessoas}}</td>
+      <td>{{evento.lote}}</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
 
 
 
-<div *ngFor="let evento of eventos"> <!-- O ng-for vai multiplicar/repitir a div a quantidade de eventos que eu tenho.  -->
-  <p><b>Tema: </b>{{evento.tema}}</p> <!-- o ng-for funciona como um forEach, entao nao ha necessidade de deixar explicito qual posicao do array vc quer que mostre na tela, ele ja vai mostrar todos se vc deixar sem o colchetes. -->
+
+<!-- {{eventos | json}}  Forma de ver um objeto em formato json, usando pipes.-->
+
+
+
+
+
+<!-- <div *ngFor="let evento of eventos">  O ng-for vai multiplicar/repitir a div a quantidade de eventos que eu tenho.
+  <p><b>Tema: </b>{{evento.tema}}</p>  o ng-for funciona como um forEach, entao nao ha necessidade de deixar explicito qual posicao do array vc quer que mostre na tela, ele ja vai mostrar todos se vc deixar sem o colchetes.
   <p><b>Local: </b>{{evento.local}}</p>
   <hr>
-</div>
+</div> -->
+
+
