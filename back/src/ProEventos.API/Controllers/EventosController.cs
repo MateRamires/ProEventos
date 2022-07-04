@@ -33,6 +33,7 @@ namespace ProEventos.API.Controllers
             imageURL = "foto2.png"
          }
       };*/ //Foi comentada toda essa linha, pois depois da aula 23, nos estamos pegando os dados do proprio DB que eh o context.
+      
         private readonly DataContext contexto;
 
         public EventosController(DataContext contexto)
