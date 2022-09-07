@@ -1,9 +1,65 @@
-<h1>Eventos</h1>
 
-
-
-<div *ngFor="let evento of eventos"> <!-- O ng-for vai multiplicar/repitir a div a quantidade de eventos que eu tenho.  -->
-  <p><b>Tema: </b>{{evento.tema}}</p> <!-- o ng-for funciona como um forEach, entao nao ha necessidade de deixar explicito qual posicao do array vc quer que mostre na tela, ele ja vai mostrar todos se vc deixar sem o colchetes. -->
+<!-- <div *ngFor="let evento of eventos">  O ng-for vai multiplicar/repitir a div a quantidade de eventos que eu tenho.
+  <p><b>Tema: </b>{{evento.tema}}</p>  o ng-for funciona como um forEach, entao nao ha necessidade de deixar explicito qual posicao do array vc quer que mostre na tela, ele ja vai mostrar todos se vc deixar sem o colchetes.
   <p><b>Local: </b>{{evento.local}}</p>
   <hr>
+</div> -->
+
+<h2>Eventos</h2>
+<hr>
+
+<div class="form-inline">
+  <div class="form-group mb-2">
+    <div class="row">
+      <div class="d-flex align-items-center">
+        <label class="me-2">Filtro:</label>
+        <div class="col-2">
+            <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)]="filtroLista"> <!-- Quando se usa o [] (property binding) nao ha necessidade de usar {{}} (interpolação) para pegar o valor de uma variavel, basta usar o nome da variavel.-->
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<table class="table table-striped">
+  <thead class="table-dark">
+    <tr>
+      <th>
+        <button type="button" class="bnt btn btn-outline-primary btn-sm" (click)="alterarEstadoImagem()">
+          {{!mostrarImagem ? "Exibir" : "Ocultar"}}
+        </button>
+      </th>
+      <th>#</th>
+      <th>Tema</th>
+      <th>Local</th>
+      <th>Data</th>
+      <th>Qtd Pessoas</th>
+      <th>Lote</th>
+      <th>Opções</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="eventos && eventos.length">
+    <tr *ngFor="let evento of eventosFiltrados">
+      <td>
+        <img [collapse]="!mostrarImagem" [isAnimated]="true" src="/assets/{{evento.imageURL}}" [style.width.px]="150" [style.margin.px]="2">
+      </td>
+      <td>{{evento.eventoId}}</td>
+      <td>{{evento.tema}}</td>
+      <td>{{evento.local}}</td>
+      <td>{{evento.dataEvento}}</td>
+      <td>{{evento.qtdPessoas}}</td>
+      <td>{{evento.lote}}</td>
+      <td>
+        <button type="button" class="btn btn-primary btn-sm me-2">Editar</button>
+        <button type="button" class="btn btn-danger btn-sm">Excluir</button>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot *ngIf="eventos.length == 0">
+    <tr>
+      <td colspan="8" class="text-center">
+        <h4>Nenhum evento encontrado!</h4>
+      </td>
+    </tr>
+  </tfoot>
+</table>
