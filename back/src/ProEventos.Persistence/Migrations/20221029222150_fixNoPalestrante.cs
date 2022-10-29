@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProEventos.Persistence.Migrations
 {
-    public partial class Initial : Migration
+    public partial class fixNoPalestrante : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,11 +32,11 @@ namespace ProEventos.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Nome = table.Column<int>(type: "INTEGER", nullable: false),
-                    MiniCurriculo = table.Column<int>(type: "INTEGER", nullable: false),
-                    ImageURL = table.Column<int>(type: "INTEGER", nullable: false),
-                    Telefone = table.Column<int>(type: "INTEGER", nullable: false),
-                    Email = table.Column<int>(type: "INTEGER", nullable: false)
+                    Nome = table.Column<string>(type: "TEXT", nullable: true),
+                    MiniCurriculo = table.Column<string>(type: "TEXT", nullable: true),
+                    ImageURL = table.Column<string>(type: "TEXT", nullable: true),
+                    Telefone = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,13 +110,13 @@ namespace ProEventos.Persistence.Migrations
                         column: x => x.EventoId,
                         principalTable: "Eventos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RedesSociais_Palestrantes_PalestranteId",
                         column: x => x.PalestranteId,
                         principalTable: "Palestrantes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
