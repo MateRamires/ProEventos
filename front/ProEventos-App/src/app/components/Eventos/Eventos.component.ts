@@ -1,10 +1,12 @@
+import { Evento } from './../../models/Evento';
+import { EventoService } from './../../services/evento.service';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 
-import { Evento } from './../models/Evento';
-import { EventoService } from './../services/evento.service';
+
 
 @Component({
   selector: 'app-Eventos',
@@ -43,10 +45,12 @@ export class EventosComponent implements OnInit {
   constructor(
     private eventoService: EventoService,
     private modalService: BsModalService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService
   ) { }
 
   public ngOnInit() { //Esse metodo sempre eh chamado antes de iniciar a aplicacao.
+    this.spinner.show();
     this.getEventos() //Por esse motivo passamos o getEventos para esse metodo, pois antes da pagina carregar, os valores de eventos ja tem que estar presentes no corpo da pagina.
   }
 
@@ -66,7 +70,11 @@ export class EventosComponent implements OnInit {
         this.eventos = eventosResp;
         this.eventosFiltrados = this.eventos
       },
-      error: (error: any) => console.log(error),
+      error: (error: any) => {
+        this.spinner.hide(),
+        this.toastr.error('Errro ao Carregar os Eventos.', 'Erro!');
+      },
+      complete: () => this.spinner.hide()
     });
 
   }
