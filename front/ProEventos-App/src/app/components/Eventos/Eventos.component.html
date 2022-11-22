@@ -1,78 +1,88 @@
-
 <!-- <div *ngFor="let evento of eventos">  O ng-for vai multiplicar/repitir a div a quantidade de eventos que eu tenho.
   <p><b>Tema: </b>{{evento.tema}}</p>  o ng-for funciona como um forEach, entao nao ha necessidade de deixar explicito qual posicao do array vc quer que mostre na tela, ele ja vai mostrar todos se vc deixar sem o colchetes.
   <p><b>Local: </b>{{evento.local}}</p>
   <hr>
 </div> -->
 
-<app-titulo [titulo]="'Evento'"></app-titulo>
+<app-titulo [titulo]="'Evento'" [iconClass]="'fa fa-calendar-alt'" [botaoListar]="true"></app-titulo>
 
-<div class="form-inline">
-  <div class="form-group mb-2">
-    <div class="row">
-      <div class="d-flex align-items-center">
-        <label class="me-2">Filtro:</label>
-        <div class="col-2">
-            <input type="text" class="form-control mr-2" placeholder="buscar" [(ngModel)]="filtroLista"> <!-- Quando se usa o [] (property binding) nao ha necessidade de usar {{}} (interpolação) para pegar o valor de uma variavel, basta usar o nome da variavel.-->
-        </div>
+<div class="card rounded shadow-sm p-3">
+
+  <div class="d-flex">
+
+    <div class="flex-fill pe-3">
+      <div class="input-group flex-nowrap mb-2">
+
+          <div class="input-group-text">Filtro:</div>
+
+        <input type="text" class="form-control" placeholder="Filtrar por Tema ou Local" [(ngModel)]="filtroLista">
+        <!-- Quando se usa o [] (property binding) nao ha necessidade de usar {{}} (interpolação) para pegar o valor de uma variavel, basta usar o nome da variavel.-->
+
       </div>
     </div>
+
+    <div>
+      <a class="d-flex btn btn-outline-primary" href="#">
+        <i class="fa fa-plus-circle my-1"></i>
+        <b class="ms-1 d-none d-sm-block">Novo</b>
+      </a>
+    </div>
+
   </div>
+
+
+  <table class="table table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th class="d-none d-md-table-cell">
+          <button type="button" class="bnt btn btn-outline-primary btn-sm" (click)="alterarEstadoImagem()">
+            <i class="{{!mostrarImagem ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
+            {{!mostrarImagem ? "Exibir" : "Ocultar"}}
+          </button>
+        </th>
+        <th>#</th>
+        <th>Tema</th>
+        <th class="d-none d-md-table-cell">Local</th>
+        <th>Data</th>
+        <th class="d-none d-md-table-cell">Qtd Pessoas</th>
+        <th class="d-none d-md-table-cell">Lote</th>
+        <th>Opções</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="eventos && eventos.length">
+      <tr *ngFor="let evento of eventosFiltrados">
+        <td class="d-none d-md-table-cell">
+          <img [collapse]="!mostrarImagem" [isAnimated]="true" src="/assets/{{evento.imageURL}}" [style.width.px]="150"
+            [style.margin.px]="2">
+        </td>
+        <td>{{evento.id}}</td>
+        <td>{{evento.tema}}</td>
+        <td class="d-none d-md-table-cell">{{evento.local}}</td>
+        <td>{{evento.dataEvento | DateFormatPipe}}</td>
+        <td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
+        <td class="d-none d-md-table-cell">{{evento.lotes[0].nome}}</td>
+        <td>
+          <button type="button" class="btn btn-danger btn-md" tooltip="Excluir" (click)="openModal(template)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot *ngIf="eventos.length == 0">
+      <tr>
+        <td colspan="8" class="text-center">
+          <h4>Nenhum evento encontrado!</h4>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+
 </div>
-
-<table class="table table-striped">
-  <thead class="table-dark">
-    <tr>
-      <th>
-        <button type="button" class="bnt btn btn-outline-primary btn-sm" (click)="alterarEstadoImagem()">
-          <i class="{{!mostrarImagem ? 'fa fa-eye' : 'fa fa-eye-slash'}}"></i>
-          {{!mostrarImagem ? "Exibir" : "Ocultar"}}
-        </button>
-      </th>
-      <th>#</th>
-      <th>Tema</th>
-      <th>Local</th>
-      <th>Data</th>
-      <th>Qtd Pessoas</th>
-      <th>Lote</th>
-      <th>Opções</th>
-    </tr>
-  </thead>
-  <tbody *ngIf="eventos && eventos.length">
-    <tr *ngFor="let evento of eventosFiltrados">
-      <td>
-        <img [collapse]="!mostrarImagem" [isAnimated]="true" src="/assets/{{evento.imageURL}}" [style.width.px]="150" [style.margin.px]="2">
-      </td>
-      <td>{{evento.id}}</td>
-      <td>{{evento.tema}}</td>
-      <td>{{evento.local}}</td>
-      <td>{{evento.dataEvento | DateFormatPipe}}</td>
-      <td>{{evento.qtdPessoas}}</td>
-      <td>{{evento.lotes[0].nome}}</td>
-      <td>
-        <button type="button" class="btn btn-primary btn-sm me-2" tooltip="Editar">
-          <i class="fa fa-edit"></i>
-        </button>
-        <button type="button" class="btn btn-danger btn-sm" tooltip="Excluir" (click)="openModal(template)">
-          <i class="fa fa-trash"></i>
-        </button>
-      </td>
-    </tr>
-  </tbody>
-  <tfoot *ngIf="eventos.length == 0">
-    <tr>
-      <td colspan="8" class="text-center">
-        <h4>Nenhum evento encontrado!</h4>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-
 
 <ng-template #template>
   <div class="modal-body text-center">
     <p>Tem certeza que quer deletar este Evento?</p>
-    <button type="button" class="btn btn-default" (click)="confirm()" >Sim</button>
-    <button type="button" class="btn btn-primary" (click)="decline()" >Não</button>
+    <button type="button" class="btn btn-default" (click)="confirm()">Sim</button>
+    <button type="button" class="btn btn-primary" (click)="decline()">Não</button>
   </div>
 </ng-template>
