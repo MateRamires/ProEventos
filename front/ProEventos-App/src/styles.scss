@@ -60,3 +60,24 @@
 }
 
 
+@media (min-width: 768px) {
+  .pt-md-7,
+  .py-md-7 {
+    padding-top: 7rem !important;
+  }
+
+  .pr-md-7,
+  .px-md-7 {
+    padding-right: 7rem !important;
+  }
+
+  .pb-md-7,
+  .py-md-7 {
+    padding-bottom: 7rem !important;
+  }
+
+  .pl-md-7,
+  .px-md-7 {
+    padding-left: 7rem !important;
+  }
+}
