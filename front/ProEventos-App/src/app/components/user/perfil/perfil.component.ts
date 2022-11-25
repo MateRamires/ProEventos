@@ -36,7 +36,7 @@ export class PerfilComponent implements OnInit {
       funcao:['', Validators.required],
       descricao:['', Validators.required],
       senha:(['', [Validators.required, Validators.minLength(6)]]),
-      confirmeSenha:['', Validators.required],
+      confirmeSenha:['', Validators.required]
     }, formOptions)
   }
 
