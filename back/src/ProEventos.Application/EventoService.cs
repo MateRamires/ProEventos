@@ -24,43 +24,49 @@ namespace ProEventos.Application
         }
     public async Task<EventoDto> AddEventos(EventoDto model)
     {
-        return null;
-        /*try
+       try
         {
-            geralPersist.Add<Evento>(model);
+            var evento = mapper.Map<Evento>(model); //O model eh um DTO, entao primeiro "convertemos" o DTO para um evento normal.
+
+            geralPersist.Add<Evento>(evento); //Depois adicionamos esse evento normal
+
             if (await geralPersist.SaveChangesAsync())
             {
-                return await eventoPersist.GetEventoByIdAsync(model.Id, false);
+                var eventoRetorno = await eventoPersist.GetEventoByIdAsync(evento.Id, false); 
+                return mapper.Map<EventoDto>(eventoRetorno); //E por ultimo fazemos o contrario, agora transformamos o evento normal em um DTO, para retornarmos o DTO.
             }
             return null;
         }
         catch (Exception ex)
         {
             throw new Exception(ex.Message); //Todos os possiveis erros serao tratados aqui.
-        }*/
+        }
     }
 
     public async Task<EventoDto> UpdateEvento(int eventoId, EventoDto model)
     {
-        return null;
-        /*try
+        try
         {
             var evento = await eventoPersist.GetEventoByIdAsync(eventoId, false);
             if (evento == null) return null;
 
             model.Id = evento.Id;
 
-            geralPersist.Update(model);
+            mapper.Map(model, evento);
+
+            geralPersist.Update<Evento>(evento);
+
             if (await geralPersist.SaveChangesAsync())
             {
-                return await eventoPersist.GetEventoByIdAsync(model.Id, false);
+                var eventoRetorno = await eventoPersist.GetEventoByIdAsync(evento.Id, false); 
+                return mapper.Map<EventoDto>(eventoRetorno);
             }
             return null;
         }
         catch (Exception ex)
         {
             throw new Exception(ex.Message);
-        }*/
+        }
     }
 
     public async Task<bool> DeleteEvento(int eventoId)

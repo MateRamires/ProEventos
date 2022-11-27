@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ProEventos.Application.Dtos
 {
     public class EventoDto //Importante citar que o DTO deve ficar na application e nao na API ou qualquer outra camada.
@@ -10,8 +12,8 @@ namespace ProEventos.Application.Dtos
         public string imageURL { get; set; }
         public string Telefone { get; set; }
         public string Email { get; set; }
-        //public IEnumerable<Lote> Lotes { get; set; }
-        //public IEnumerable<RedeSocial> RedesSociais { get; set; }
-        //public IEnumerable<PalestranteEvento> PalestrantesEventos { get; set; }
+        public IEnumerable<LoteDto> Lotes { get; set; }
+        public IEnumerable<RedeSocialDto> RedesSociais { get; set; }
+        public IEnumerable<PalestranteDto> Palestrantes { get; set; }
     }
 }
