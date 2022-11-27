@@ -1,6 +1,6 @@
-namespace ProEventos.API.Dtos
+namespace ProEventos.Application.Dtos
 {
-    public class EventoDto
+    public class EventoDto //Importante citar que o DTO deve ficar na application e nao na API ou qualquer outra camada.
     {
         public int Id { get; set; }
         public string Local { get; set; }

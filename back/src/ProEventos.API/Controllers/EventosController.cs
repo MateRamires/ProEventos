@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ProEventos.API.Dtos;
 using ProEventos.Application.Contratos;
-using ProEventos.Domain; //Como estamos fazendo uso de eventos, temos que dar esse using na pasta dos modelos, onde esta localizado a classe Evento.
+using ProEventos.Application.Dtos; //Como estamos fazendo uso de eventos, temos que dar esse using na pasta dos modelos dtos, onde esta localizado a classe Evento.
 
 namespace ProEventos.API.Controllers
 {
@@ -29,24 +26,7 @@ namespace ProEventos.API.Controllers
                 var eventos = await eventoService.GetAllEventosAsync(true);
                 if(eventos == null) return NotFound("Nenhum evento encontrado.");
 
-                var eventosRetorno = new List<EventoDto>(); //Estamos criando um eventosRetorno que eh uma lista de eventosDto
-
-                foreach (var evento in eventos) //Estamos iterando pelo eventos que possui todos os eventos vindo do DB
-                {
-                    eventosRetorno.Add(new EventoDto(){ //Estamos adicionando cada um dos eventos para essa lista de eventosDto, e o dto possui apenas os atributos que vamos retornar para quem esta chamando essa API.
-                        Id = evento.Id,
-                        Local = evento.Local,
-                        DataEvento = evento.DataEvento.ToString(),
-                        Tema = evento.Tema,
-                        QtdPessoas = evento.QtdPessoas,
-                        imageURL = evento.imageURL,
-                        Telefone = evento.Telefone,
-                        Email = evento.Email
-
-                    });
-                }
-
-                return Ok(eventosRetorno); //E agora nos retornamos a lista de EventoDto, antes nos retornavamos a lista de eventos "crua" com todos os atributos, sem nenhum filtro.
+                return Ok(eventos); //E agora nos retornamos a lista de EventoDto, antes nos retornavamos a lista de eventos "crua" com todos os atributos, sem nenhum filtro.
             }
             catch (Exception ex)
             {
@@ -90,7 +70,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPost] //Aqui eh referenciado qual metodo do http que tera a funcao abaixo.
-        public async Task<IActionResult> Post(Evento model) //Essa eh a funcao que ira ser chamada ao usar o metodo Post no EventoControler.
+        public async Task<IActionResult> Post(EventoDto model) //Essa eh a funcao que ira ser chamada ao usar o metodo Post no EventoControler.
         {
             try
             {
@@ -107,7 +87,7 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpPut("{id}")] //Nesse metodo put estamos tambem pedindo para passar o parametro id.
-        public async Task<IActionResult> Put(int id, Evento model)
+        public async Task<IActionResult> Put(int id, EventoDto model)
         {
             try
             {
