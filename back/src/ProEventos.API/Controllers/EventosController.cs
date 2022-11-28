@@ -24,7 +24,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var eventos = await eventoService.GetAllEventosAsync(true);
-                if(eventos == null) return NotFound("Nenhum evento encontrado.");
+                if(eventos == null) return NoContent();
 
                 return Ok(eventos); //E agora nos retornamos a lista de EventoDto, antes nos retornavamos a lista de eventos "crua" com todos os atributos, sem nenhum filtro.
             }
@@ -41,7 +41,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var evento = await eventoService.GetEventoByIdAsync(id, true);
-                if(evento == null) return NotFound("Evento por ID não encontrado.");
+                if(evento == null) return NoContent();
 
                 return Ok(evento);
             }
@@ -58,7 +58,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var evento = await eventoService.GetAllEventosByTemaAsync(tema, true);
-                if(evento == null) return NotFound("Eventos por tema não encontrados.");
+                if(evento == null) return NoContent();
 
                 return Ok(evento);
             }
@@ -75,7 +75,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var evento = await eventoService.AddEventos(model);
-                if(evento == null) return BadRequest("Erro ao tentar adicionar evento.");
+                if(evento == null) return NoContent();
 
                 return Ok(evento);
             }
@@ -92,7 +92,7 @@ namespace ProEventos.API.Controllers
             try
             {
                 var evento = await eventoService.UpdateEvento(id, model);
-                if(evento == null) return BadRequest("Erro ao tentar atualizar evento.");
+                if(evento == null) return NoContent();
 
                 return Ok(evento);
             }
@@ -109,9 +109,12 @@ namespace ProEventos.API.Controllers
         {
             try
             {
+                var evento = await eventoService.GetEventoByIdAsync(id, true);
+                if(evento == null) return NoContent();
+                
                 return await eventoService.DeleteEvento(id) ? 
                 Ok("Deletado.") : 
-                BadRequest("Evento não deletado");
+                throw new Exception("Ocorreu um problema ao tentar deletar o evento.");
                 
             }
             catch (Exception ex)
