@@ -17,6 +17,7 @@ export class EventoListaComponent implements OnInit {
 
   public eventos: Evento[] = [];
   public eventosFiltrados: Evento[] = [];
+  public eventoId = 0;
 
   public mostrarImagem: boolean = true;
 
@@ -50,10 +51,10 @@ export class EventoListaComponent implements OnInit {
 
   public ngOnInit() { //Esse metodo sempre eh chamado antes de iniciar a aplicacao.
     this.spinner.show();
-    this.getEventos() //Por esse motivo passamos o getEventos para esse metodo, pois antes da pagina carregar, os valores de eventos ja tem que estar presentes no corpo da pagina.
+    this.carregarEventos() //Por esse motivo passamos o carregarEventos para esse metodo, pois antes da pagina carregar, os valores de eventos ja tem que estar presentes no corpo da pagina.
   }
 
-  public getEventos(): void {
+  public carregarEventos(): void {
 
     /*const observer = {
       next: (eventosResp: Evento[]) =>{
@@ -71,7 +72,7 @@ export class EventoListaComponent implements OnInit {
       },
       error: (error: any) => {
         this.spinner.hide(),
-        this.toastr.error('Errro ao Carregar os Eventos.', 'Erro!');
+          this.toastr.error('Errro ao Carregar os Eventos.', 'Erro!');
       },
       complete: () => this.spinner.hide()
     });
@@ -82,20 +83,39 @@ export class EventoListaComponent implements OnInit {
     this.mostrarImagem = !this.mostrarImagem;
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template, {class: 'modal-sm'});
+  openModal(event: any, template: TemplateRef<any>, eventoId: number) {
+    event.stopPropagation(); //Evita que outros eventos sejam acionados ao clicar no botao de excluir, nesse caso, ele nao ira para a tela de detalhes de eventos ao clicar no excluir.
+    this.eventoId = eventoId;
+    this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
   }
 
   confirm(): void {
     this.modalRef?.hide();
-    this.toastr.success('O Evento foi deletado com sucesso.', 'Deletado!');
+    this.spinner.show();
+
+    this.eventoService.deleteEvento(this.eventoId).subscribe(
+      (result: any) => {
+        if (result.message === "Deletado") {
+          this.toastr.success('O Evento foi deletado com sucesso.', 'Deletado!');
+          this.spinner.hide();
+          this.carregarEventos();
+        }
+      },
+      (error: any) => {
+        console.error(error);
+        this.toastr.error(`Erro ao tentar deletar o Evento ${this.eventoId}`, 'Erro!');
+        this.spinner.hide();
+      },
+      () => this.spinner.hide()
+    );
+
   }
 
   decline(): void {
     this.modalRef?.hide();
   }
 
-  detalheEvento(id: number): void{
+  detalheEvento(id: number): void {
     this.router.navigate([`eventos/detalhe/${id}`]);
   }
 
