@@ -18,10 +18,12 @@ namespace ProEventos.Application.Dtos
         [Display(Name = "Qtd. Pessoas")]
         [Range(1, 12000, ErrorMessage = "{0} não pode ser menor que 1 e maior que 120.000")]
         public int QtdPessoas { get; set; }
+
+        [RegularExpression(@".*\.(gif|jpe?g|bmp|png)$", ErrorMessage = "Não é uma imagem válida.")]
         public string imageURL { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
-        [Phone(ErrorMessage = "O campo {0} está com número inválido.")]
+        [Phone(ErrorMessage = "O campo {0} está com número inválido. (gif, jpg, jpeg, bmp ou png)")]
         public string Telefone { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
