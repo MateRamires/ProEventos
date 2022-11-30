@@ -18,6 +18,7 @@ export class EventoDetalheComponent implements OnInit {
 
   form!: FormGroup;
   evento = {} as Evento;
+  estadoSalvar = 'post';
 
   get f(): any {
     return this.form.controls;
@@ -47,9 +48,12 @@ export class EventoDetalheComponent implements OnInit {
 
     if (eventoIdParam !== null) {
       this.spinner.show();
+
+      this.estadoSalvar = 'put';
+
       this.eventoService.getEventoById(+eventoIdParam).subscribe(  //+ ira converter a string para number.
         (evento: Evento) => {
-          this.evento = {...evento}; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
+          this.evento = { ...evento }; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
           this.form.patchValue(this.evento);
         },
         (error: any) => {
@@ -87,6 +91,29 @@ export class EventoDetalheComponent implements OnInit {
 
   public cssValidator(campoForm: FormControl): any {
     return { 'is-invalid': campoForm.errors && campoForm.touched }
+  }
+
+  public salvarAlteracao(): void {
+    this.spinner.show();
+    if (this.form.valid) {
+
+      this.evento = (this.estadoSalvar === 'post')
+        ? { ... this.form.value }
+        : {id: this.evento.id, ... this.form.value};
+
+
+      this.eventoService[this.estadoSalvar](this.evento).subscribe(
+        () => this.toastr.success('Evento Salvo com Sucesso.', 'Sucesso!'),
+        (error: any) => {
+          console.error(error);
+          this.spinner.hide();
+          this.toastr.error('Erro ao Salvar Evento.', 'Erro!')
+        },
+        () => this.spinner.hide()
+      );
+
+
+    }
   }
 
 }
