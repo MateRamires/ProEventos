@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ProEventos.Application.Contratos;
@@ -22,46 +23,52 @@ namespace ProEventos.Application
             this.mapper = mapper;
 
         }
-    public async Task<LoteDto> AddEventos(LoteDto model)
+    public async Task AddLote(int eventoId, LoteDto model)
     {
        try
         {
-            var evento = mapper.Map<Evento>(model); //O model eh um DTO, entao primeiro "convertemos" o DTO para um evento normal.
+            var lote = mapper.Map<Lote>(model); 
+            lote.EventoId = eventoId;
 
-            geralPersist.Add<Evento>(evento); //Depois adicionamos esse evento normal
+            geralPersist.Add<Lote>(lote); 
 
-            if (await geralPersist.SaveChangesAsync())
-            {
-                var eventoRetorno = await lotePersist.GetEventoByIdAsync(evento.Id, false); 
-                return mapper.Map<LoteDto>(eventoRetorno); //E por ultimo fazemos o contrario, agora transformamos o evento normal em um DTO, para retornarmos o DTO.
-            }
-            return null;
+            await geralPersist.SaveChangesAsync();
+
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message); //Todos os possiveis erros serao tratados aqui.
+            throw new Exception(ex.Message); 
         }
     }
 
-    public async Task<LoteDto> UpdateEvento(int eventoId, LoteDto model)
+    public async Task<LoteDto[]> SaveLotes(int eventoId, LoteDto[] models)
     {
         try
         {
-            var evento = await lotePersist.GetEventoByIdAsync(eventoId, false);
-            if (evento == null) return null;
+            var lotes = await lotePersist.GetLotesByEventoIdAsync(eventoId);
+            if (lotes == null) return null;
 
-            model.Id = evento.Id;
-
-            mapper.Map(model, evento);
-
-            geralPersist.Update<Evento>(evento);
-
-            if (await geralPersist.SaveChangesAsync())
+            foreach (var model in models)
             {
-                var eventoRetorno = await lotePersist.GetEventoByIdAsync(evento.Id, false); 
-                return mapper.Map<LoteDto>(eventoRetorno);
+                if(model.Id == 0) {
+                    await AddLote(eventoId, model);
+                }
+                else {
+
+                    var lote = lotes.FirstOrDefault(lote => lote.Id == model.Id);
+                    model.EventoId = eventoId;
+
+                    mapper.Map(model, lote);
+
+                    geralPersist.Update<Lote>(lote);
+
+                    await geralPersist.SaveChangesAsync();
+                }
             }
-            return null;
+            
+            var loteRetorno = await lotePersist.GetLotesByEventoIdAsync(eventoId); 
+            return mapper.Map<LoteDto[]>(loteRetorno);
+            
         }
         catch (Exception ex)
         {

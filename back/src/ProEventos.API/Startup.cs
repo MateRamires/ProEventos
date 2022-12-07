@@ -38,8 +38,11 @@ namespace ProEventos.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IEventoService, EventoService>(); 
+            services.AddScoped<ILoteService, LoteService>();
+            
             services.AddScoped<IGeralPersist, GeralPersist>();
             services.AddScoped<IEventoPersist, EventoPersist>(); //Esses comandos servem para dizer ao c# quais as classes que a interface devera implentar quando for injetada em algum arquivo (como no controller). (Essa era a minha duvida que eu perguntei na aula da udemy).
+            services.AddScoped<ILotePersist, LotePersist>();
 
             services.AddCors();
             services.AddSwaggerGen(c =>
