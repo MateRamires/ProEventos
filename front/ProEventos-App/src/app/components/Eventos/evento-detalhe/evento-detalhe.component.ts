@@ -1,9 +1,10 @@
+import { Lote } from './../../../models/Lote';
 import { Evento } from './../../../models/Evento';
 import { EventoService } from './../../../services/evento.service';
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
@@ -20,6 +21,10 @@ export class EventoDetalheComponent implements OnInit {
   evento = {} as Evento;
   estadoSalvar = 'post';
 
+  get modoEditar(): boolean {
+    return this.estadoSalvar === "put" //Quando a tela estiver em modo PUT, a variavel modoEditar vai retornar TRUE, mostrando assim o formulario de lotes. Pois quando a tela for de criacao de um novo Evento, nao deve aparecer o form de Lotes.
+  }
+
   get f(): any {
     return this.form.controls;
   }
@@ -34,17 +39,22 @@ export class EventoDetalheComponent implements OnInit {
     }
   }
 
+  get lotes(): FormArray {
+    return this.form.get('lotes') as FormArray
+  }
+
   constructor(private fb: FormBuilder,
     private localeService: BsLocaleService,
-    private router: ActivatedRoute,
+    private activeRoute: ActivatedRoute,
     private eventoService: EventoService,
     private spinner: NgxSpinnerService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private router: Router) {
     this.localeService.use('pt-br')
   }
 
   public carregarEvento(): void {
-    const eventoIdParam = this.router.snapshot.paramMap.get('id');
+    const eventoIdParam = this.activeRoute.snapshot.paramMap.get('id');
 
     if (eventoIdParam !== null) {
       this.spinner.show();
@@ -82,6 +92,22 @@ export class EventoDetalheComponent implements OnInit {
       telefone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       imageURL: ['', Validators.required],
+      lotes: this.fb.array([])
+    })
+  }
+
+  adicionarLote(): void {
+    this.lotes.push(this.criarLote({ id: 0 } as Lote));
+  }
+
+  criarLote(lote: Lote): FormGroup {
+    return this.fb.group({
+      id: [lote.id],
+      nome: [lote.nome, Validators.required],
+      quantidade: [lote.quantidade, Validators.required],
+      preco: [lote.preco, Validators.required],
+      dataInicio: [lote.dataInicio],
+      dataFim: [lote.dataFim]
     })
   }
 
@@ -89,7 +115,7 @@ export class EventoDetalheComponent implements OnInit {
     this.form.reset();
   }
 
-  public cssValidator(campoForm: FormControl): any {
+  public cssValidator(campoForm: FormControl | AbstractControl): any {
     return { 'is-invalid': campoForm.errors && campoForm.touched }
   }
 
@@ -99,11 +125,15 @@ export class EventoDetalheComponent implements OnInit {
 
       this.evento = (this.estadoSalvar === 'post')
         ? { ... this.form.value }
-        : {id: this.evento.id, ... this.form.value};
+        : { id: this.evento.id, ... this.form.value };
 
 
       this.eventoService[this.estadoSalvar](this.evento).subscribe(
-        () => this.toastr.success('Evento Salvo com Sucesso.', 'Sucesso!'),
+        (eventoRetorno: Evento) => {
+
+          this.toastr.success('Evento Salvo com Sucesso.', 'Sucesso!');
+          this.router.navigate([`eventos/detalhe/${eventoRetorno.id}`])
+        },
         (error: any) => {
           console.error(error);
           this.spinner.hide();
