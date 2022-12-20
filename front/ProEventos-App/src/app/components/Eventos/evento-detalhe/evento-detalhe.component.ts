@@ -1,3 +1,4 @@
+import { LoteService } from './../../../services/lote.service';
 import { Lote } from './../../../models/Lote';
 import { Evento } from './../../../models/Evento';
 import { EventoService } from './../../../services/evento.service';
@@ -17,6 +18,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class EventoDetalheComponent implements OnInit {
 
+  eventoId: number;
   form!: FormGroup;
   evento = {} as Evento;
   estadoSalvar = 'post';
@@ -49,19 +51,20 @@ export class EventoDetalheComponent implements OnInit {
     private eventoService: EventoService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService,
-    private router: Router) {
+    private router: Router,
+    private loteService: LoteService) {
     this.localeService.use('pt-br')
   }
 
   public carregarEvento(): void {
-    const eventoIdParam = this.activeRoute.snapshot.paramMap.get('id');
+    this.eventoId = +this.activeRoute.snapshot.paramMap.get('id');
 
-    if (eventoIdParam !== null) {
+    if (this.eventoId !== null || this.eventoId === 0) {
       this.spinner.show();
 
       this.estadoSalvar = 'put';
 
-      this.eventoService.getEventoById(+eventoIdParam).subscribe(  //+ ira converter a string para number.
+      this.eventoService.getEventoById(this.eventoId).subscribe(  //+ ira converter a string para number.
         (evento: Evento) => {
           this.evento = { ...evento }; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
           this.form.patchValue(this.evento);
@@ -119,7 +122,7 @@ export class EventoDetalheComponent implements OnInit {
     return { 'is-invalid': campoForm.errors && campoForm.touched }
   }
 
-  public salvarAlteracao(): void {
+  public salvarEvento(): void {
     this.spinner.show();
     if (this.form.valid) {
 
@@ -143,6 +146,22 @@ export class EventoDetalheComponent implements OnInit {
       );
 
 
+    }
+  }
+
+  public salvarLotes(): void {
+    this.spinner.show();
+    if(this.form.controls['lotes'].valid){
+      this.loteService.saveLote(this.eventoId, this.form.value.lotes).subscribe(
+        () => {
+          this.toastr.success('Lotes salvos com Sucesso!', 'Sucesso!');
+          //this.lotes.reset();
+        },
+        (error: any) => {
+          this.toastr.error('Erro ao tentar salvar lotes.', 'Erro');
+          console.error(error);
+        },
+      ).add(() => this.spinner.hide())
     }
   }
 
