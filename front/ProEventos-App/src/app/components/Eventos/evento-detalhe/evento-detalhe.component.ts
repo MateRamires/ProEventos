@@ -1,9 +1,10 @@
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LoteService } from './../../../services/lote.service';
 import { Lote } from './../../../models/Lote';
 import { Evento } from './../../../models/Evento';
 import { EventoService } from './../../../services/evento.service';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -18,10 +19,12 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class EventoDetalheComponent implements OnInit {
 
+  modalRef: BsModalRef;
   eventoId: number;
   form!: FormGroup;
   evento = {} as Evento;
   estadoSalvar = 'post';
+  loteAtual = {id: 0, nome: "", indice: 0};
 
   get modoEditar(): boolean {
     return this.estadoSalvar === "put" //Quando a tela estiver em modo PUT, a variavel modoEditar vai retornar TRUE, mostrando assim o formulario de lotes. Pois quando a tela for de criacao de um novo Evento, nao deve aparecer o form de Lotes.
@@ -50,6 +53,7 @@ export class EventoDetalheComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private eventoService: EventoService,
     private spinner: NgxSpinnerService,
+    private modalService: BsModalService,
     private toastr: ToastrService,
     private router: Router,
     private loteService: LoteService) {
@@ -102,6 +106,7 @@ export class EventoDetalheComponent implements OnInit {
     }
   }
 
+  //Nao esta sendo utilizado, mas eh util usar dessa maneira quando a classe principal nao possui essa classe secundaria imbutida, sendo necessario realizar outra busca no banco.
   public carregarLotes(): void {
     this.loteService.getLotesByEventoId(this.eventoId).subscribe(
       (lotesRetorno: Lote[]) => {
@@ -169,7 +174,7 @@ export class EventoDetalheComponent implements OnInit {
 
   public salvarLotes(): void {
     this.spinner.show();
-    if(this.form.controls['lotes'].valid){
+    if (this.form.controls['lotes'].valid) {
       this.loteService.saveLote(this.eventoId, this.form.value.lotes).subscribe(
         () => {
           this.toastr.success('Lotes salvos com Sucesso!', 'Sucesso!');
@@ -181,6 +186,36 @@ export class EventoDetalheComponent implements OnInit {
         },
       ).add(() => this.spinner.hide())
     }
+  }
+
+  public removerLote(template: TemplateRef<any>, indice: number): void {
+
+    this.loteAtual.id = this.lotes.get(indice + '.id').value;
+    this.loteAtual.nome = this.lotes.get(indice + '.nome').value;
+    this.loteAtual.indice = indice;
+
+
+    this.modalRef = this.modalService.show(template, {class: 'modal-sm'})
+  }
+
+  confirmDeleteLote(): void {
+    this.modalRef.hide();
+    this.spinner.show();
+
+    this.loteService.deleteLote(this.eventoId, this.loteAtual.id).subscribe(
+      () => {
+        this.toastr.success("Lote deletado com sucesso!", "Sucesso");
+        this.lotes.removeAt(this.loteAtual.indice);
+      },
+      (error: any) => {
+        this.toastr.error(`Erro ao tentar deletar o Lote ${this.loteAtual.id}.`, 'Erro');
+        console.error(error);
+      }
+    ).add(() => this.spinner.hide());
+  }
+
+  declineDeleteLote(): void {
+    this.modalRef.hide();
   }
 
 }
