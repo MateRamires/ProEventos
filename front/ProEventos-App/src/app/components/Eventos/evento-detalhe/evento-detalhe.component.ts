@@ -56,30 +56,6 @@ export class EventoDetalheComponent implements OnInit {
     this.localeService.use('pt-br')
   }
 
-  public carregarEvento(): void {
-    this.eventoId = +this.activeRoute.snapshot.paramMap.get('id');
-
-    if (this.eventoId !== null || this.eventoId === 0) {
-      this.spinner.show();
-
-      this.estadoSalvar = 'put';
-
-      this.eventoService.getEventoById(this.eventoId).subscribe(  //+ ira converter a string para number.
-        (evento: Evento) => {
-          this.evento = { ...evento }; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
-          this.form.patchValue(this.evento);
-        },
-        (error: any) => {
-          this.spinner.hide();
-          this.toastr.error('Erro ao tentar carregar evento.', 'Erro!')
-          console.error(error);
-        },
-        () => {
-          this.spinner.hide();
-        }
-      )
-    }
-  }
 
   ngOnInit(): void {
     this.carregarEvento();
@@ -98,6 +74,48 @@ export class EventoDetalheComponent implements OnInit {
       lotes: this.fb.array([])
     })
   }
+
+
+  public carregarEvento(): void {
+    this.eventoId = +this.activeRoute.snapshot.paramMap.get('id');
+
+    if (this.eventoId !== null || this.eventoId === 0) {
+      this.spinner.show();
+
+      this.estadoSalvar = 'put';
+
+      this.eventoService.getEventoById(this.eventoId).subscribe(  //+ ira converter a string para number.
+        (evento: Evento) => {
+          this.evento = { ...evento }; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
+          this.form.patchValue(this.evento);
+          this.evento.lotes.forEach(lote => {
+            this.lotes.push(this.criarLote(lote))
+          });
+
+          //this.carregarLotes();
+        },
+        (error: any) => {
+          this.toastr.error('Erro ao tentar carregar evento.', 'Erro!')
+          console.error(error);
+        }
+      ).add(() => this.spinner.hide());
+    }
+  }
+
+  public carregarLotes(): void {
+    this.loteService.getLotesByEventoId(this.eventoId).subscribe(
+      (lotesRetorno: Lote[]) => {
+        lotesRetorno.forEach(lote => {
+          this.lotes.push(this.criarLote(lote)) //Quando fazemos this.lotes.push, estamos fazendo a mesma coisa da funcao adicionarLotes, so que nesse caso,estamos adicionando cada um dos lotes que esta vindo do banco de dados.
+        })
+      },
+      (error) => {
+        this.toastr.error("Erro ao tentar carregar lotes", "Erro");
+        console.error(error);
+      }
+    ).add(() => this.spinner.hide());
+  }
+
 
   adicionarLote(): void {
     this.lotes.push(this.criarLote({ id: 0 } as Lote));
