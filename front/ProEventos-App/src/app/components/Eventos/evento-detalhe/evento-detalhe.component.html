@@ -20,8 +20,8 @@
       <div class="row">
         <div class="col-md-8">
           <label>Local</label>
-          <input type="text" class="form-control" formControlName="local"
-            [ngClass]="cssValidator(f.local)" placeholder="">
+          <input type="text" class="form-control" formControlName="local" [ngClass]="cssValidator(f.local)"
+            placeholder="">
           <div *ngIf="f.local.errors?.required" class="invalid-feedback">
             Local é obrigatorio.
           </div>
@@ -29,9 +29,7 @@
         <div class="col-md-4">
           <label>Data e Hora</label>
           <input type="datetime" class="form-control" formControlName="dataEvento"
-            [ngClass]="cssValidator(f.dataEvento)" placeholder=""
-            bsDatepicker
-            [bsConfig]="bsConfig">
+            [ngClass]="cssValidator(f.dataEvento)" placeholder="" bsDatepicker [bsConfig]="bsConfig">
           <div *ngIf="f.dataEvento.errors?.required" class="invalid-feedback">
             Data e Hora é obrigatorio.
           </div>
@@ -40,8 +38,8 @@
       <div class="row">
         <div class="col-md-2">
           <label>Quantidade de Pessoas</label>
-          <input type="number" class="form-control" formControlName="qtdPessoas"
-            [ngClass]="cssValidator(f.qtdPessoas)" placeholder="">
+          <input type="number" class="form-control" formControlName="qtdPessoas" [ngClass]="cssValidator(f.qtdPessoas)"
+            placeholder="">
           <div *ngIf="f.qtdPessoas.errors?.required" class="invalid-feedback">
             Quantidade de Pessoas é obrigatorio.
           </div>
@@ -51,16 +49,16 @@
         </div>
         <div class="col-md-2">
           <label>Telefone</label>
-          <input type="text" class="form-control" formControlName="telefone"
-            [ngClass]="cssValidator(f.telefone)" placeholder="(000) 90000-0000">
+          <input type="text" class="form-control" formControlName="telefone" [ngClass]="cssValidator(f.telefone)"
+            placeholder="(000) 90000-0000">
           <div *ngIf="f.telefone.errors?.required" class="invalid-feedback">
             Telefone é obrigatorio.
           </div>
         </div>
         <div class="col-md-4">
           <label>E-mail</label>
-          <input type="text" class="form-control" formControlName="email"
-            [ngClass]="cssValidator(f.email)" placeholder="fulano@ciclano.com">
+          <input type="text" class="form-control" formControlName="email" [ngClass]="cssValidator(f.email)"
+            placeholder="fulano@ciclano.com">
           <div *ngIf="f.email.errors?.required" class="invalid-feedback">
             E-mail é obrigatorio.
           </div>
@@ -70,8 +68,8 @@
         </div>
         <div class="col-md-4">
           <label>Imagem</label>
-          <input type="text" class="form-control" formControlName="imageURL"
-            [ngClass]="cssValidator(f.imageURL)" placeholder="imagem">
+          <input type="text" class="form-control" formControlName="imageURL" [ngClass]="cssValidator(f.imageURL)"
+            placeholder="imagem">
           <div *ngIf="f.imageURL.errors?.required" class="invalid-feedback">
             Imagem é obrigatorio.
           </div>
@@ -108,63 +106,62 @@
         <div formArrayName="lotes" *ngFor="let lote of lotes.controls; let i = index">
           <fieldset [formGroupName]="i" class="form-group">
             <legend class="d-flex justify-content-between capitalize">
-              <button class="p-2 btn btn-sm btn-outline-warning mb-1 d-flex"
-                (click)="removerLote(template, i)"
-                tooltip="Excluir Lote"
-                [adaptivePosition]="false"
-                [delay]="500"
-                placement="left">
-              <i class="fa fa-window-close my-1"></i>
-              <b class="ml-1 d-none d-sm-block">Excluir</b>
-            </button>
-          </legend>
-          <div class="row mb-4">
-            <div class="form-group col-md-4">
-              <label>Nome</label>
-              <input
-              [ngClass]="cssValidator(lotes.get(i+'.nome'))"
-              type="text" class="form-control" formControlName="nome" placeholder="Lote">
+              {{
+              retornaTituloLote(lotes.get(i+'.nome').value)
+              }}
+              <button class="p-2 btn btn-sm btn-outline-warning mb-1 d-flex" (click)="removerLote(template, i)"
+                tooltip="Excluir Lote" [adaptivePosition]="false" [delay]="500" placement="left">
+                <i class="fa fa-window-close my-1"></i>
+                <b class="ml-1 d-none d-sm-block">Excluir</b>
+              </button>
+            </legend>
+            <div class="row mb-4">
+              <div class="form-group col-md-4">
+                <label>Nome</label>
+                <input [ngClass]="cssValidator(lotes.get(i+'.nome'))" type="text" class="form-control"
+                  formControlName="nome" placeholder="Lote">
+              </div>
+              <div class="form-group col-md-4">
+                <label>Quantidade</label>
+                <input [ngClass]="cssValidator(lotes.get(i+'.quantidade'))" type="text" class="form-control"
+                  formControlName="quantidade" placeholder="000">
+              </div>
+              <div class="form-group col-md-4">
+                <label>Preço</label>
+                <input [ngClass]="cssValidator(lotes.get(i+'.preco'))" type="text" currencyMask class="form-control"
+                  formControlName="preco" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left' }"
+                  placeholder="R$ 0,00">
+              </div>
+              <div class="form-group col-md-4">
+                <label>Data Início</label>
+                <input type="text" class="form-control" formControlName="dataInicio" bsDatepicker
+                  [bsConfig]="bsConfigLote" placeholder="01/01/2019">
+              </div>
+              <div class="form-group col-md-4">
+                <label>Data Fim</label>
+                <input type="text" class="form-control" formControlName="dataFim" bsDatepicker [bsConfig]="bsConfigLote"
+                  placeholder="01/01/2019">
+              </div>
             </div>
-            <div class="form-group col-md-4">
-              <label>Quantidade</label>
-              <input
-              [ngClass]="cssValidator(lotes.get(i+'.quantidade'))"
-              type="text" class="form-control" formControlName="quantidade" placeholder="000">
-            </div>
-            <div class="form-group col-md-4">
-              <label>Preço</label>
-              <input
-              [ngClass]="cssValidator(lotes.get(i+'.preco'))"
-              type="text" currencyMask class="form-control" formControlName="preco" placeholder="R$ 0,00">
-            </div>
-            <div class="form-group col-md-4">
-              <label>Data Início</label>
-              <input type="text" class="form-control" formControlName="dataInicio" placeholder="01/01/2019">
-            </div>
-            <div class="form-group col-md-4">
-              <label>Data Fim</label>
-              <input type="text" class="form-control" formControlName="dataFim" placeholder="01/01/2019">
-            </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        </div>
       </div>
     </div>
-  </div>
-  <button class="d-flex btn btn-outline-primary mt-4" (click)="adicionarLote()">
-    <i class="fa fa-plus-circle my-1"></i>
-    <b class="ms-1">Lote</b>
-  </button>
-</div>
-<div class="card-footer">
-  <div class="d-flex">
-    <button class="btn btn-outline-secondary me-auto border">
-      Cancelar Alteração
-    </button>
-    <button class="btn btn-success" (click)="salvarLotes()">
-      Salvar Lotes
+    <button class="d-flex btn btn-outline-primary mt-4" (click)="adicionarLote()">
+      <i class="fa fa-plus-circle my-1"></i>
+      <b class="ms-1">Lote</b>
     </button>
   </div>
-</div>
+  <div class="card-footer">
+    <div class="d-flex">
+      <button class="btn btn-outline-secondary me-auto border">
+        Cancelar Alteração
+      </button>
+      <button class="btn btn-success" [disabled]="form.controls['lotes'].invalid" (click)="salvarLotes()">
+        Salvar Lotes
+      </button>
+    </div>
+  </div>
 </div>
 <br>
 
@@ -175,6 +172,3 @@
     <button type="button" class="btn btn-primary" (click)="declineDeleteLote()">Não</button>
   </div>
 </ng-template>
-
-
-
