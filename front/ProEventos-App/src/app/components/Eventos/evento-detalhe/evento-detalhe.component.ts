@@ -148,7 +148,7 @@ export class EventoDetalheComponent implements OnInit {
   }
 
   public retornaTituloLote(nome: string): string {
-    return nome === null || nome === '' ? 'Nome do lote FODASSE' : nome
+    return nome === null || nome === '' ? 'Nome do lote' : nome
   }
 
   public resetForm(): void {
