@@ -25,6 +25,7 @@ export class EventoDetalheComponent implements OnInit {
   evento = {} as Evento;
   estadoSalvar = 'post';
   loteAtual = {id: 0, nome: "", indice: 0};
+  imagemURL = 'assets/upload.png'
 
   get modoEditar(): boolean {
     return this.estadoSalvar === "put" //Quando a tela estiver em modo PUT, a variavel modoEditar vai retornar TRUE, mostrando assim o formulario de lotes. Pois quando a tela for de criacao de um novo Evento, nao deve aparecer o form de Lotes.
