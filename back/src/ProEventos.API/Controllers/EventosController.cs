@@ -69,6 +69,30 @@ namespace ProEventos.API.Controllers
             }
         }
 
+        [HttpPost("upload-image/{eventoId}")] 
+        public async Task<IActionResult> UploadImage(int eventoId) 
+        {
+            try
+            {
+                var evento = await eventoService.GetEventoByIdAsync(eventoId, true); //Primeiro verificamos se o evento existe com o id que foi passado.
+                if(evento == null) return NoContent();
+
+                var file = Request.Form.Files[0];
+                if(file.Length > 0){
+                    // DeleteImage(evento.ImageURL);
+                    //evento.imageURL = SaveImage(file);
+                }
+                var EventoRetorno = await eventoService.UpdateEvento(eventoId, evento);
+
+                return Ok(EventoRetorno);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                $"Erro ao tentar adicionar eventos. Erro: {ex.Message}");
+            }
+        }
+
         [HttpPost] //Aqui eh referenciado qual metodo do http que tera a funcao abaixo.
         public async Task<IActionResult> Post(EventoDto model) //Essa eh a funcao que ira ser chamada ao usar o metodo Post no EventoControler.
         {
