@@ -453,6 +453,8 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+Resources/
+
 #Excluindo DB
 *.db
 *.db-shm

@@ -23,7 +23,7 @@ export class EventoDetalheComponent implements OnInit {
   modalRef: BsModalRef;
 
   form!: FormGroup;
-  
+
   estadoSalvar = 'post';
 
   evento = {} as Evento;
@@ -106,7 +106,7 @@ export class EventoDetalheComponent implements OnInit {
 
       this.estadoSalvar = 'put';
 
-      this.eventoService.getEventoById(this.eventoId).subscribe(  //+ ira converter a string para number.
+      this.eventoService.getEventoById(this.eventoId).subscribe(  //simbolo de + ira converter a string para number.
         (evento: Evento) => {
           this.evento = { ...evento }; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
           this.form.patchValue(this.evento);
