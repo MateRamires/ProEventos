@@ -21,11 +21,16 @@ import { NgxSpinnerService } from 'ngx-spinner';
 export class EventoDetalheComponent implements OnInit {
 
   modalRef: BsModalRef;
-  eventoId: number;
+
   form!: FormGroup;
-  evento = {} as Evento;
+  
   estadoSalvar = 'post';
+
+  evento = {} as Evento;
+  eventoId: number;
+
   loteAtual = {id: 0, nome: "", indice: 0};
+
   imagemURL = 'assets/upload.png';
   file: File;
 
