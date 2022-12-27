@@ -1,3 +1,4 @@
+import { environment } from './../../../../environments/environment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { LoteService } from './../../../services/lote.service';
 import { Lote } from './../../../models/Lote';
@@ -25,7 +26,8 @@ export class EventoDetalheComponent implements OnInit {
   evento = {} as Evento;
   estadoSalvar = 'post';
   loteAtual = {id: 0, nome: "", indice: 0};
-  imagemURL = 'assets/upload.png'
+  imagemURL = 'assets/upload.png';
+  file: File;
 
   get modoEditar(): boolean {
     return this.estadoSalvar === "put" //Quando a tela estiver em modo PUT, a variavel modoEditar vai retornar TRUE, mostrando assim o formulario de lotes. Pois quando a tela for de criacao de um novo Evento, nao deve aparecer o form de Lotes.
@@ -85,7 +87,7 @@ export class EventoDetalheComponent implements OnInit {
       qtdPessoas: ['', [Validators.required, Validators.max(12000)]],
       telefone: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      imageURL: ['', Validators.required],
+      imageURL: [''],
       lotes: this.fb.array([])
     })
   }
@@ -103,6 +105,9 @@ export class EventoDetalheComponent implements OnInit {
         (evento: Evento) => {
           this.evento = { ...evento }; //Se eu utilizasse apenas o this.evento = evento, ele iria apenas atribuir e memoria seria perdida, com esse spread operator isso nao ocorre, portanto eh a melhor forma.
           this.form.patchValue(this.evento);
+          if(this.evento.imageURL !== ""){
+            this.imagemURL = environment.apiURL + 'resources/images/' + this.evento.imageURL;
+          }
           this.evento.lotes.forEach(lote => {
             this.lotes.push(this.criarLote(lote))
           });
@@ -231,6 +236,31 @@ export class EventoDetalheComponent implements OnInit {
 
   declineDeleteLote(): void {
     this.modalRef.hide();
+  }
+
+  onFileChange(evento: any): void {
+    const reader = new FileReader();
+
+    reader.onload = (event: any) => this.imagemURL = event.target.result
+
+    this.file = evento.target.files;
+    reader.readAsDataURL(this.file[0]);
+
+    this.uploadImagem();
+  }
+
+  uploadImagem(): void {
+    this.spinner.show();
+    this.eventoService.postUpload(this.eventoId, this.file).subscribe(
+      ()=>{
+        this.carregarEvento();
+        this.toastr.success("Imagem atualizada com Sucesso!", "Sucesso!");
+      },
+      (error: any)=>{
+        this.toastr.success("Erro ao fazer upload de imagem!", "Erro!");
+        console.error(error);
+      },
+    ).add(() => this.spinner.hide());
   }
 
 }

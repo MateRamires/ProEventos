@@ -1,3 +1,4 @@
+import { environment } from './../../../../environments/environment';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -81,6 +82,12 @@ export class EventoListaComponent implements OnInit {
 
   public alterarEstadoImagem(): void {
     this.mostrarImagem = !this.mostrarImagem;
+  }
+
+  public mostraImagem(imagemURL: string): string {
+    return (imagemURL !== '')
+    ? `${environment.apiURL}resources/images/${imagemURL}`
+    : 'assets/semImagem.png';
   }
 
   openModal(event: any, template: TemplateRef<any>, eventoId: number) {

@@ -166,7 +166,7 @@ namespace ProEventos.API.Controllers
 
             var imagePath = Path.Combine(hostEnvironment.ContentRootPath, @"Resources/images", imageName);
 
-            using (var fileStream = new FileStream(imageName, FileMode.Create)){
+            using (var fileStream = new FileStream(imagePath, FileMode.Create)){
                 await imageFile.CopyToAsync(fileStream);
             };
 
