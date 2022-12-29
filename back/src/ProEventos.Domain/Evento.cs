@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ProEventos.Domain.Identity;
 
 namespace ProEventos.Domain //Quando um arquivo fizer uso desse modelo, ele tera que ter um using <esse_namespace> para utilizar a classe Evento.
 {
@@ -17,6 +18,8 @@ namespace ProEventos.Domain //Quando um arquivo fizer uso desse modelo, ele tera
         public string imageURL { get; set; }
         public string Telefone { get; set; }
         public string Email { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
         public IEnumerable<Lote> Lotes { get; set; } //IEnumerable eh usado quando se tem diversos de uma coisa, nesse caso, tem diversos lotes em um Evento, entao se usa o IEnumerable. 
         public IEnumerable<RedeSocial> RedesSociais { get; set; }
         public IEnumerable<PalestranteEvento> PalestrantesEventos { get; set; }
