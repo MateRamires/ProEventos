@@ -10,7 +10,7 @@ namespace ProEventos.Persistence.Contratos
     {
         Task<IEnumerable<User>> GetUsersAsync();
         Task<User> GetUserByIdAsync(int id);
-        Task<User> GetUserByUsernameAsync(string username);
+        Task<User> GetUserByUserNameAsync(string userName);
 
     }
 }
