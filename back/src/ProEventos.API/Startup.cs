@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +35,10 @@ namespace ProEventos.API
                 context => context.UseSqlite(Configuration.GetConnectionString("Default")) //Com o contexto em maos, nos falamos que o contexto ira usar o sqLite (DB que vamos usar) e passamos como parametro a conexao com esse DB. Essa conexao eh feita usando o configuration, que foi injetado nessa classe e eh referente ao appsettings.json, entao la no appsettings nos colocamos a "rota" para o db e o nome dessa rota sera exatamente o "Default" que passamos como parametro para o useSqlite. 
             ); //Para pegar uma string de conexao basta usar a variavel configuration e o metodo dela "GetConnectionString()".
             services.AddControllers()
-                        .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =
+                        .AddJsonOptions(options => 
+                            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+                        ) //Essa configuracao eh para funcionar os enums. Sem essa config ele so retorna os IDs dos enums e nao o nome composto (naoInformado). Mas isso depende de projeto a projeto, alguns preferem que o json retorne apenas o id mesmo.
+                        .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling =
                             Newtonsoft.Json.ReferenceLoopHandling.Ignore
                         ); //Esse NewtonsoftJson devera ser importado pelo nugget, e com a linha de codigo acima, ira resolver erros de loop.
            
@@ -42,10 +46,14 @@ namespace ProEventos.API
 
             services.AddScoped<IEventoService, EventoService>(); 
             services.AddScoped<ILoteService, LoteService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAccountService, AccountService>();
             
             services.AddScoped<IGeralPersist, GeralPersist>();
             services.AddScoped<IEventoPersist, EventoPersist>(); //Esses comandos servem para dizer ao c# quais as classes que a interface devera implentar quando for injetada em algum arquivo (como no controller). (Essa era a minha duvida que eu perguntei na aula da udemy).
             services.AddScoped<ILotePersist, LotePersist>();
+            services.AddScoped<IUserPersist, UserPersist>();
+
 
             services.AddCors();
             services.AddSwaggerGen(c =>
