@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ProEventos.Application;
 using ProEventos.Application.Contratos;
+using ProEventos.Domain.Identity;
 using ProEventos.Persistance.Contextos;
 using ProEventos.Persistence;
 using ProEventos.Persistence.Contratos;
@@ -34,13 +36,30 @@ namespace ProEventos.API
             services.AddDbContext<ProEventosContext>( //Aqui estamos pegando o contexto que foi criado na pasta Data. (DataContext.cs)
                 context => context.UseSqlite(Configuration.GetConnectionString("Default")) //Com o contexto em maos, nos falamos que o contexto ira usar o sqLite (DB que vamos usar) e passamos como parametro a conexao com esse DB. Essa conexao eh feita usando o configuration, que foi injetado nessa classe e eh referente ao appsettings.json, entao la no appsettings nos colocamos a "rota" para o db e o nome dessa rota sera exatamente o "Default" que passamos como parametro para o useSqlite. 
             ); //Para pegar uma string de conexao basta usar a variavel configuration e o metodo dela "GetConnectionString()".
+            
+            services.AddIdentityCore<User>(options => { //Essa sao opcoes para a senha, num sistema de verdade, deve ser feito de acordo com a seguranca que voce deseja, por exemplo, aqui como eh um curso deixamos tudo falso, mas talvez num sistema de verdade, seria interessante colocar que letras maiusculas sao obrigatorias para a senha, entre outras opcoes.
+                 options.Password.RequireDigit = false;
+                 options.Password.RequireNonAlphanumeric = false;
+                 options.Password.RequireLowercase = false;
+                 options.Password.RequireUppercase = false;
+                 options.Password.RequiredLength = 4;
+            })
+            .AddRoles<Role>()
+            .AddRoleManager<RoleManager<Role>>()
+            .AddSignInManager<SignInManager<User>>()
+            .AddRoleValidator<RoleValidator<Role>>()
+            .AddEntityFrameworkStores<ProEventosContext>()
+            .AddDefaultTokenProviders(); //Essa config AddDefaultTokenProviders serve para funcionar o uso dos tokens no accountService (resetToken e atualizar a senha).
+            
+
+
             services.AddControllers()
-                        .AddJsonOptions(options => 
-                            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-                        ) //Essa configuracao eh para funcionar os enums. Sem essa config ele so retorna os IDs dos enums e nao o nome composto (naoInformado). Mas isso depende de projeto a projeto, alguns preferem que o json retorne apenas o id mesmo.
-                        .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling =
-                            Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                        ); //Esse NewtonsoftJson devera ser importado pelo nugget, e com a linha de codigo acima, ira resolver erros de loop.
+                    .AddJsonOptions(options => 
+                        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+                    ) //Essa configuracao eh para funcionar os enums. Sem essa config ele so retorna os IDs dos enums e nao o nome composto (naoInformado). Mas isso depende de projeto a projeto, alguns preferem que o json retorne apenas o id mesmo.
+                    .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling =
+                        Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                    ); //Esse NewtonsoftJson devera ser importado pelo nugget, e com a linha de codigo acima, ira resolver erros de loop.
            
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
