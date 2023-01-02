@@ -42,7 +42,7 @@ namespace ProEventos.API.Controllers
 
 
         [HttpPost("Register")]
-        [AllowAnonymous] //Permite que o metodo abaixo seja chamado externamente por alguem que nao tem autorizacao. (Pula a etapa de autorizacao, sem ele, ira dar erro de unauthorized, caso ainda nao haja um token).
+        [AllowAnonymous] 
         public async Task<IActionResult> Register(UserDto userDto){
             try
             {
@@ -59,6 +59,32 @@ namespace ProEventos.API.Controllers
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
                 $"Erro ao tentar cadastrar Usuário. Erro: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost("Login")]
+        [AllowAnonymous] //Permite que o metodo abaixo seja chamado externamente por alguem que nao tem autorizacao. (Pula a etapa de autorizacao, sem ele, ira dar erro de unauthorized, caso ainda nao haja um token).
+        public async Task<IActionResult> Login(UserLoginDto userLoginDto){
+            try
+            {
+                var user = await accountService.GetUserByUserNameAsync(userLoginDto.UserName);
+                if(user == null) return Unauthorized("Usuário ou Senha está errado!");
+
+                var result = await accountService.CheckUserPasswordAsync(user, userLoginDto.Password);
+                if(!result.Succeeded) return Unauthorized();
+
+
+                return Ok(new {
+                    userName = user.UserName,
+                    PrimeiroNome = user.PrimeiroNome,
+                    token = tokenService.CreateToken(user).Result
+                });
+            }
+            catch (System.Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                $"Erro ao tentar recuperar Usuário. Erro: {ex.Message}");
             }
         }
         
