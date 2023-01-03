@@ -30,7 +30,9 @@ namespace ProEventos.API.Controllers
         public async Task<IActionResult> GetUser(string userName){
             try
             {
+                Console.WriteLine(userName);
                 var user = await accountService.GetUserByUserNameAsync(userName);
+
                 return Ok(user);
             }
             catch (System.Exception ex)
@@ -65,19 +67,19 @@ namespace ProEventos.API.Controllers
 
         [HttpPost("Login")]
         [AllowAnonymous] //Permite que o metodo abaixo seja chamado externamente por alguem que nao tem autorizacao. (Pula a etapa de autorizacao, sem ele, ira dar erro de unauthorized, caso ainda nao haja um token).
-        public async Task<IActionResult> Login(UserLoginDto userLoginDto){
+        public async Task<IActionResult> Login(UserLoginDto userLogin){
             try
             {
-                var user = await accountService.GetUserByUserNameAsync(userLoginDto.UserName);
-                if(user == null) return Unauthorized("Usuário ou Senha está errado!");
+                var user = await accountService.GetUserByUserNameAsync(userLogin.Username);
+                if (user == null) return Unauthorized("Usuário ou Senha está errado");
 
-                var result = await accountService.CheckUserPasswordAsync(user, userLoginDto.Password);
-                if(!result.Succeeded) return Unauthorized();
+                var result = await accountService.CheckUserPasswordAsync(user, userLogin.Password);
+                if (!result.Succeeded) return Unauthorized();
 
-
-                return Ok(new {
+                return Ok(new
+                {
                     userName = user.UserName,
-                    PrimeiroNome = user.PrimeiroNome,
+                    PrimeroNome = user.PrimeiroNome,
                     token = tokenService.CreateToken(user).Result
                 });
             }

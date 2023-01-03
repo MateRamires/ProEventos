@@ -23,19 +23,21 @@ namespace ProEventos.Persistance.Contextos
 
             //Primeira forma de fazer o onModelCreating das tabelas.
 
-            modelBuilder.Entity<UserRole>(userRole=>{
-                userRole.HasKey(ur => new { ur.UserId, ur.RoleId});
+            modelBuilder.Entity<UserRole>(userRole => 
+                {
+                    userRole.HasKey(ur => new { ur.UserId, ur.RoleId});
 
-                userRole.HasOne(ur => ur.Role)
-                    .WithMany(r => r.UserRoles)
-                    .HasForeignKey(ur => ur.RoleId)
-                    .IsRequired();
+                    userRole.HasOne(ur => ur.Role)
+                        .WithMany(r => r.UserRoles)
+                        .HasForeignKey(ur => ur.RoleId)
+                        .IsRequired();
 
-                userRole.HasOne(ur => ur.User)
-                    .WithMany(r => r.UserRoles)
-                    .HasForeignKey(ur => ur.UserId)
-                    .IsRequired();
-            });
+                    userRole.HasOne(ur => ur.User)
+                        .WithMany(r => r.UserRoles)
+                        .HasForeignKey(ur => ur.UserId)
+                        .IsRequired();
+                }
+            );
 
             //Segunda forma de fazer o onModelCreating das tabelas. (Ambas estao corretas)
 
