@@ -30,7 +30,6 @@ namespace ProEventos.API.Controllers
         public async Task<IActionResult> GetUser(string userName){
             try
             {
-                Console.WriteLine(userName);
                 var user = await accountService.GetUserByUserNameAsync(userName);
 
                 return Ok(user);
