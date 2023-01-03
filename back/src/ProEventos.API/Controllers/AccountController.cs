@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProEventos.API.Extensions;
 using ProEventos.Application.Contratos;
 using ProEventos.Application.Dtos;
 
@@ -25,11 +27,11 @@ namespace ProEventos.API.Controllers
             this.tokenService = tokenService;
         }
 
-        [HttpGet("GetUser/{userName}")]
-        [AllowAnonymous] //Permite que o metodo abaixo seja chamado externamente por alguem que nao tem autorizacao. (Pula a etapa de autorizacao, sem ele, ira dar erro de unauthorized, caso ainda nao haja um token).
-        public async Task<IActionResult> GetUser(string userName){
+        [HttpGet("GetUser")] 
+        public async Task<IActionResult> GetUser(){
             try
             {
+                var userName = User.GetUserName();
                 var user = await accountService.GetUserByUserNameAsync(userName);
 
                 return Ok(user);
