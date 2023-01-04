@@ -67,7 +67,7 @@ namespace ProEventos.API
             services.AddControllers()
                     .AddJsonOptions(options => 
                         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-                    ) //Essa configuracao eh para funcionar os enums. Sem essa config ele so retorna os IDs dos enums e nao o nome composto (naoInformado). Mas isso depende de projeto a projeto, alguns preferem que o json retorne apenas o id mesmo.
+                    ) //Essa configuracao eh para funcionar os enums. Sem essa config quando for fazer um put ou um post, devera ser enviado o codigo do enum (1,2,3) e nao podera ser enviado o nome composto (naoInformado, Participante). Mas isso depende de projeto a projeto, alguns preferem que o json retorne apenas o id mesmo. (Obs: com essa config voce pode mandar tanto o nome composto, quanto o id, os dois irao funcionar).
                     .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling =
                         Newtonsoft.Json.ReferenceLoopHandling.Ignore
                     ); //Esse NewtonsoftJson devera ser importado pelo nugget, e com a linha de codigo acima, ira resolver erros de loop.

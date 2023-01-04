@@ -61,7 +61,7 @@ namespace ProEventos.API.Controllers
             catch (System.Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar cadastrar Usuário. Erro: {ex.Message}");
+                $"Erro ao tentar registrar Usuário. Erro: {ex.Message}");
             }
         }
 
@@ -87,7 +87,28 @@ namespace ProEventos.API.Controllers
             catch (System.Exception ex)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar recuperar Usuário. Erro: {ex.Message}");
+                $"Erro ao tentar Realizar Login. Erro: {ex.Message}");
+            }
+        }
+
+
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto){
+            try
+            {
+                var user = await accountService.GetUserByUserNameAsync(User.GetUserName()); //Eu so posso atualizar o meu usuario, baseado no meu token atual, ou seja, baseado na pessoa que esta logada.
+                if (user == null) return Unauthorized("Usuário Inválido");
+
+                var userReturn = await accountService.UpdateAccount(userUpdateDto);
+                if(userReturn == null)
+                    return NoContent();
+                
+                return Ok(userReturn);
+            }
+            catch (System.Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                $"Erro ao tentar Atualizar Usuário. Erro: {ex.Message}");
             }
         }
         
