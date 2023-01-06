@@ -27,8 +27,9 @@ namespace ProEventos.API.Controllers
             this.tokenService = tokenService;
         }
 
-        [HttpGet("GetUser")] 
-        public async Task<IActionResult> GetUser(){
+        [HttpGet("GetUser")]
+        public async Task<IActionResult> GetUser()
+        {
             try
             {
                 var userName = User.GetUserName();
@@ -45,17 +46,23 @@ namespace ProEventos.API.Controllers
 
 
         [HttpPost("Register")]
-        [AllowAnonymous] 
-        public async Task<IActionResult> Register(UserDto userDto){
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(UserDto userDto)
+        {
             try
             {
-                if(await accountService.UserExists(userDto.UserName))
+                if (await accountService.UserExists(userDto.UserName))
                     return BadRequest("Usuário já existe!");
 
                 var user = await accountService.CreateAccountAsync(userDto);
-                if(user != null)
-                    return Ok(user);
-                
+                if (user != null)
+                    return Ok(new
+                    {
+                        userName = user.UserName,
+                        PrimeroNome = user.PrimeiroNome,
+                        token = tokenService.CreateToken(user).Result
+                    });
+
                 return BadRequest("Usuário não criado, tente novamente mais tarde!");
             }
             catch (System.Exception ex)
@@ -68,7 +75,8 @@ namespace ProEventos.API.Controllers
 
         [HttpPost("Login")]
         [AllowAnonymous] //Permite que o metodo abaixo seja chamado externamente por alguem que nao tem autorizacao. (Pula a etapa de autorizacao, sem ele, ira dar erro de unauthorized, caso ainda nao haja um token).
-        public async Task<IActionResult> Login(UserLoginDto userLogin){
+        public async Task<IActionResult> Login(UserLoginDto userLogin)
+        {
             try
             {
                 var user = await accountService.GetUserByUserNameAsync(userLogin.Username);
@@ -93,16 +101,17 @@ namespace ProEventos.API.Controllers
 
 
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto){
+        public async Task<IActionResult> UpdateUser(UserUpdateDto userUpdateDto)
+        {
             try
             {
                 var user = await accountService.GetUserByUserNameAsync(User.GetUserName()); //Eu so posso atualizar o meu usuario, baseado no meu token atual, ou seja, baseado na pessoa que esta logada.
                 if (user == null) return Unauthorized("Usuário Inválido");
 
                 var userReturn = await accountService.UpdateAccount(userUpdateDto);
-                if(userReturn == null)
+                if (userReturn == null)
                     return NoContent();
-                
+
                 return Ok(userReturn);
             }
             catch (System.Exception ex)
@@ -111,7 +120,7 @@ namespace ProEventos.API.Controllers
                 $"Erro ao tentar Atualizar Usuário. Erro: {ex.Message}");
             }
         }
-        
+
 
 
     }

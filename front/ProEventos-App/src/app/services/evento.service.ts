@@ -11,7 +11,7 @@ import { take } from 'rxjs/operators'
 )
 export class EventoService {
   baseURL = environment.apiURL + 'api/eventos';
-  tokenHeader = new HttpHeaders({'Authorization': 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwidW5pcXVlX25hbWUiOiJtYXRoZXVzIiwibmJmIjoxNjcyODQyMjAzLCJleHAiOjE2NzI5Mjg2MDMsImlhdCI6MTY3Mjg0MjIwM30.QueWnqAfUlMOcCBN4eoGA6QC41BfVALX_sGyKeyE3LFCeeZOpnnqy0ydAHv1CES95qsJzlb2QGR8bMAG5wZ9ig'});
+  tokenHeader = new HttpHeaders({'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token} `});
 
   constructor(private http: HttpClient) { }
 
