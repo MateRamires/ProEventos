@@ -4,9 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '@app/models/Identity/user';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
+
 export class AccountService {
   private currentUserSource = new ReplaySubject<User>(1); //Essa variavel vai receber diversas atualizacoes durante o funcionamento do sistema.
   public currentUser$ = this.currentUserSource.asObservable();
@@ -21,7 +20,7 @@ export class AccountService {
       take(1),
       map((response: User) => {
         const user = response;
-        if(user) {
+        if (user) {
           this.setCurrentUser(user)
         }
       })
@@ -33,7 +32,7 @@ export class AccountService {
       take(1),
       map((response: User) => {
         const user = response;
-        if(user) {
+        if (user) {
           this.setCurrentUser(user)
         }
       })
