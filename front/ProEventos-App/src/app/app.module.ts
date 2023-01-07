@@ -1,3 +1,4 @@
+import { HomeComponent } from './components/home/home.component';
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
@@ -53,6 +54,7 @@ defineLocale('pt-br', ptBrLocale);
     PerfilComponent,
     TituloComponent,
     EventosComponent,
+    HomeComponent,
     EventoDetalheComponent,
     EventoListaComponent,
     UserComponent,
