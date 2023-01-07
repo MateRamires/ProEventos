@@ -105,6 +105,9 @@ namespace ProEventos.API.Controllers
         {
             try
             {
+                if(userUpdateDto.UserName != User.GetUserName())
+                    return Unauthorized("Usuário inválido");
+
                 var user = await accountService.GetUserByUserNameAsync(User.GetUserName()); //Eu so posso atualizar o meu usuario, baseado no meu token atual, ou seja, baseado na pessoa que esta logada.
                 if (user == null) return Unauthorized("Usuário Inválido");
 
@@ -112,7 +115,12 @@ namespace ProEventos.API.Controllers
                 if (userReturn == null)
                     return NoContent();
 
-                return Ok(userReturn);
+                return Ok(new 
+                {
+                    userName = userReturn.UserName,
+                    PrimeroNome = userReturn.PrimeiroNome,
+                    token = tokenService.CreateToken(userReturn).Result
+                });
             }
             catch (System.Exception ex)
             {
