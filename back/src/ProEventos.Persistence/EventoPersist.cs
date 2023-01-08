@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProEventos.Domain;
 using ProEventos.Persistance.Contextos;
 using ProEventos.Persistence.Contratos;
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.Persistence
 {
@@ -17,7 +18,7 @@ namespace ProEventos.Persistence
 
         }
 
-        public async Task<Evento[]> GetAllEventosAsync(int userId, bool includePalestrantes = false)
+        public async Task<PageList<Evento>> GetAllEventosAsync(int userId, PageParams pageParams, bool includePalestrantes = false)
         {
             IQueryable<Evento> query = _context.Eventos
                 .Include(e => e.Lotes)
@@ -31,30 +32,10 @@ namespace ProEventos.Persistence
             }
 
             query = query.AsNoTracking()
-                         .Where(e => e.UserId == userId) //Ira pegar todos os eventos do id do usuario que foi passado (que no caso, eh o usuario que esta logado).
-                         .OrderBy(e => e.Id); //Ordenará a query pelo ID.
+                        .Where(e => e.Tema.ToLower().Contains(pageParams.Term.ToLower()) && e.UserId == userId) //Ira pegar todos os eventos do id do usuario que foi passado (que no caso, eh o usuario que esta logado).
+                        .OrderBy(e => e.Id); //Ordenará a query pelo ID.
 
-            return await query.ToArrayAsync(); //E por fim retornar a query.
-        }
-
-        public async Task<Evento[]> GetAllEventosByTemaAsync(int userId, string tema, bool includePalestrantes = false)
-        {
-            IQueryable<Evento> query = _context.Eventos
-                .Include(e => e.Lotes)
-                .Include(e => e.RedesSociais);
-
-            if(includePalestrantes)
-            {
-                query = query
-                    .Include(e => e.PalestrantesEventos)
-                    .ThenInclude(pe => pe.Palestrante); 
-            }
-
-            query = query.AsNoTracking().OrderBy(e => e.Id)
-                .Where(e => e.Tema.ToLower().Contains(tema.ToLower()) && //Antes de retornarmos estamos fazendo um Where. A logica dentro desse Where é a seguinte: a cada evento que tiver (e), procure o tema (e.Tema), converte para lowerCase (ToLower()) e analisa se ele contem o tema que foi passado no parametro e converte ele para lowerCase tambem.
-                            e.UserId == userId);
-
-            return await query.ToArrayAsync(); 
+            return await PageList<Evento>.CreateAsync(query, pageParams.PageNumber, pageParams.pageSize); //E por fim retornar a query.
         }
 
         public async Task<Evento> GetEventoByIdAsync(int userId, int eventoId, bool includePalestrantes = false)
@@ -75,6 +56,27 @@ namespace ProEventos.Persistence
 
             return await query.FirstOrDefaultAsync();
         }
+
+
+        /*public async Task<PageList<Evento>> GetAllEventosAsync(int userId, PageParams pageParams, bool includePalestrantes = false)
+        {
+            IQueryable<Evento> query = _context.Eventos
+                .Include(e => e.Lotes)
+                .Include(e => e.RedesSociais);
+
+            if(includePalestrantes)
+            {
+                query = query
+                    .Include(e => e.PalestrantesEventos)
+                    .ThenInclude(pe => pe.Palestrante); 
+            }
+
+            query = query.AsNoTracking().OrderBy(e => e.Id)
+                .Where(e => e.Tema.ToLower().Contains(tema.ToLower()) && //Antes de retornarmos estamos fazendo um Where. A logica dentro desse Where é a seguinte: a cada evento que tiver (e), procure o tema (e.Tema), converte para lowerCase (ToLower()) e analisa se ele contem o tema que foi passado no parametro e converte ele para lowerCase tambem.
+                            e.UserId == userId);
+
+            return await query.ToArrayAsync(); 
+        }*/
 
     }
 }
