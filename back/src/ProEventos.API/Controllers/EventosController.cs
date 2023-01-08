@@ -38,6 +38,8 @@ namespace ProEventos.API.Controllers
                 var eventos = await eventoService.GetAllEventosAsync(User.GetUserId(), pageParams, true);
                 if (eventos == null) return NoContent();
 
+                Response.AddPagination(eventos.CurrentPage, eventos.PageSize, eventos.TotalCount, eventos.TotalPages);
+
                 return Ok(eventos); //E agora nos retornamos a lista de EventoDto, antes nos retornavamos a lista de eventos "crua" com todos os atributos, sem nenhum filtro.
             }
             catch (Exception ex)
