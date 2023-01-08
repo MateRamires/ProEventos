@@ -100,6 +100,11 @@ namespace ProEventos.Application
 
                 var resultado = mapper.Map<PageList<EventoDto>>(eventos);
 
+                resultado.CurrentPage = eventos.CurrentPage;
+                resultado.TotalPages = eventos.TotalPages;
+                resultado.PageSize = eventos.PageSize;
+                resultado.TotalCount = eventos.TotalCount;
+
                 return resultado;
             }
             catch (Exception ex)
