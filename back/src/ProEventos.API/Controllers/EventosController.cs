@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProEventos.API.Extensions;
 using ProEventos.Application.Contratos;
 using ProEventos.Application.Dtos; //Como estamos fazendo uso de eventos, temos que dar esse using na pasta dos modelos dtos, onde esta localizado a classe Evento.
+using ProEventos.Persistence.Models;
 
 namespace ProEventos.API.Controllers
 {
@@ -30,11 +31,11 @@ namespace ProEventos.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() //Evento eh o tipo desse metodo, ou seja, por ser um get, ele retornara um evento.
+        public async Task<IActionResult> Get([FromQuery] PageParams pageParams) //Evento eh o tipo desse metodo, ou seja, por ser um get, ele retornara um evento.
         {
             try
             {
-                var eventos = await eventoService.GetAllEventosAsync(User.GetUserId(), true);
+                var eventos = await eventoService.GetAllEventosAsync(User.GetUserId(), pageParams, true);
                 if (eventos == null) return NoContent();
 
                 return Ok(eventos); //E agora nos retornamos a lista de EventoDto, antes nos retornavamos a lista de eventos "crua" com todos os atributos, sem nenhum filtro.
@@ -52,23 +53,6 @@ namespace ProEventos.API.Controllers
             try
             {
                 var evento = await eventoService.GetEventoByIdAsync(User.GetUserId(), id, true);
-                if (evento == null) return NoContent();
-
-                return Ok(evento);
-            }
-            catch (Exception ex)
-            {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,
-                $"Erro ao tentar recuperar eventos. Erro: {ex.Message}");
-            }
-        }
-
-        [HttpGet("{tema}/tema")]
-        public async Task<IActionResult> GetByTema(string tema)
-        {
-            try
-            {
-                var evento = await eventoService.GetAllEventosByTemaAsync(User.GetUserId(), tema, true);
                 if (evento == null) return NoContent();
 
                 return Ok(evento);
@@ -194,6 +178,24 @@ namespace ProEventos.API.Controllers
             if (System.IO.File.Exists(imagePath))
                 System.IO.File.Delete(imagePath);
         }
+
+
+        /*[HttpGet("{tema}/tema")]
+        public async Task<IActionResult> GetByTema(string tema)
+        {
+            try
+            {
+                var evento = await eventoService.GetAllEventosByTemaAsync(User.GetUserId(), tema, true);
+                if (evento == null) return NoContent();
+
+                return Ok(evento);
+            }
+            catch (Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError,
+                $"Erro ao tentar recuperar eventos. Erro: {ex.Message}");
+            }
+        }*/
 
     }
 }
