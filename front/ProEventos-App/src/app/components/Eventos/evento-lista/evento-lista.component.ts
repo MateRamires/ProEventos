@@ -6,6 +6,7 @@ import { EventoService } from './../../../services/evento.service';
 import { Evento } from './../../../models/Evento';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { Component, OnInit, TemplateRef } from '@angular/core';
+import { PaginatedResult, Pagination } from '@app/models/Pagination';
 
 @Component({
   selector: 'app-evento-lista',
@@ -19,6 +20,7 @@ export class EventoListaComponent implements OnInit {
   public eventos: Evento[] = [];
   public eventosFiltrados: Evento[] = [];
   public eventoId = 0;
+  public pagination = {} as Pagination;
 
   public mostrarImagem: boolean = true;
 
@@ -51,11 +53,13 @@ export class EventoListaComponent implements OnInit {
   ) { }
 
   public ngOnInit() { //Esse metodo sempre eh chamado antes de iniciar a aplicacao.
-    this.spinner.show();
+    this.pagination = {currentPage: 1, itemsPerPage: 3, totalItems: 1} as Pagination;
     this.carregarEventos() //Por esse motivo passamos o carregarEventos para esse metodo, pois antes da pagina carregar, os valores de eventos ja tem que estar presentes no corpo da pagina.
   }
 
   public carregarEventos(): void {
+
+    this.spinner.show();
 
     /*const observer = {
       next: (eventosResp: Evento[]) =>{
@@ -66,10 +70,11 @@ export class EventoListaComponent implements OnInit {
       complete: () => {}
     }*/   //Modelo de um observer
 
-    this.eventoService.getEventos().subscribe({
-      next: (eventosResp: Evento[]) => {
-        this.eventos = eventosResp;
-        this.eventosFiltrados = this.eventos
+    this.eventoService.getEventos(this.pagination.currentPage, this.pagination.itemsPerPage).subscribe({
+      next: (paginatedResult: PaginatedResult<Evento[]>) => {
+        this.eventos = paginatedResult.result;
+        this.eventosFiltrados = this.eventos;
+        this.pagination = paginatedResult.pagination;
       },
       error: (error: any) => {
         this.spinner.hide(),
@@ -94,6 +99,10 @@ export class EventoListaComponent implements OnInit {
     event.stopPropagation(); //Evita que outros eventos sejam acionados ao clicar no botao de excluir, nesse caso, ele nao ira para a tela de detalhes de eventos ao clicar no excluir.
     this.eventoId = eventoId;
     this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
+  }
+
+  pageChanged($evento): void {
+
   }
 
   confirm(): void {

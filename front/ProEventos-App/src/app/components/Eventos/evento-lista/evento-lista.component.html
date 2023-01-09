@@ -5,7 +5,7 @@
     <div class="flex-fill pe-3">
       <div class="input-group flex-nowrap mb-2">
 
-          <div class="input-group-text">Filtro:</div>
+        <div class="input-group-text">Filtro:</div>
 
         <input type="text" class="form-control" placeholder="Filtrar por Tema ou Local" [(ngModel)]="filtroLista">
         <!-- Quando se usa o [] (property binding) nao ha necessidade de usar {{}} (interpolação) para pegar o valor de uma variavel, basta usar o nome da variavel.-->
@@ -44,8 +44,8 @@
     <tbody *ngIf="eventos && eventos.length">
       <tr *ngFor="let evento of eventosFiltrados" (click)="detalheEvento(evento.id)" style="cursor:pointer;">
         <td class="d-none d-md-table-cell">
-          <img [collapse]="!mostrarImagem" [isAnimated]="true" [src]="mostraImagem(evento.imageURL)" [style.width.px]="150"
-            [style.margin.px]="2">
+          <img [collapse]="!mostrarImagem" [isAnimated]="true" [src]="mostraImagem(evento.imageURL)"
+            [style.width.px]="150" [style.margin.px]="2">
         </td>
         <td>{{evento.id}}</td>
         <td>{{evento.tema}}</td>
@@ -54,7 +54,8 @@
         <td class="d-none d-md-table-cell">{{evento.qtdPessoas}}</td>
         <td class="d-none d-md-table-cell">{{evento.lotes[0]?.nome}}</td>
         <td>
-          <button type="button" class="btn btn-danger btn-md" tooltip="Excluir" (click)="openModal($event, template, evento.id)">
+          <button type="button" class="btn btn-danger btn-md" tooltip="Excluir"
+            (click)="openModal($event, template, evento.id)">
             <i class="fa fa-trash"></i>
           </button>
         </td>
@@ -68,6 +69,24 @@
       </tr>
     </tfoot>
   </table>
+
+  <div class="d-flex justify-content-center">
+    <pagination [boundaryLinks]="true"
+    [align]="true"
+    [totalItems]="pagination.totalItems"
+    [itemsPerPage]="pagination.itemsPerPage"
+    [(ngModel)]="pagination.currentPage"
+    (pageChanged)="pageChanged($event)"
+
+    pageBtnClass="btn"
+    previousText="&lsaquo;"
+    nextText="&rsaquo;"
+    firstText="&laquo;"
+    lastText="&raquo;">
+
+    </pagination>
+  </div>
+
 
 </div>
 
