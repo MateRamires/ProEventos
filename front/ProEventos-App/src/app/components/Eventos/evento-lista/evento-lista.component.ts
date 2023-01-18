@@ -79,9 +79,8 @@ export class EventoListaComponent implements OnInit {
       error: (error: any) => {
         this.spinner.hide(),
           this.toastr.error('Errro ao Carregar os Eventos.', 'Erro!');
-      },
-      complete: () => this.spinner.hide()
-    });
+      }
+    }).add(() => this.spinner.hide());
 
   }
 
@@ -101,8 +100,9 @@ export class EventoListaComponent implements OnInit {
     this.modalRef = this.modalService.show(template, { class: 'modal-sm' });
   }
 
-  pageChanged($evento): void {
-
+  pageChanged(event): void {
+    this.pagination.currentPage = event.page;
+    this.carregarEventos();
   }
 
   confirm(): void {
